@@ -1506,10 +1506,45 @@ struct vfio_device_feature_dma_buf {
 	struct vfio_region_dma_range dma_ranges[] __counted_by(nr_ranges);
 };
 
+/**
+ * VFIO FMB passthrough
+ */
+#define VFIO_DEVICE_FEATURE_ZPCI_FMB 13
+
+struct vfio_device_feature_zpci_fmb {
+	__u8 enabled;
+	__u32 format:	8;
+	__u32 fmt_ind:	24;
+	__u32 samples;
+	__u64 last_update;
+	__u64 ld_ops;
+	__u64 st_ops;
+	__u64 stb_ops;
+	__u64 rpcit_ops;
+	union {
+		struct {
+			__u64 dma_rbytes;
+			__u64 dma_wbytes;
+		} fmt0;
+		struct {
+			__u64 rx_bytes;
+			__u64 rx_packets;
+			__u64 tx_bytes;
+			__u64 tx_packets;
+		} fmt1;
+		struct {
+			__u64 consumed_work_units;
+			__u64 max_work_units;
+		} fmt2;
+		struct {
+			__u64 tx_bytes;
+		} fmt3;
+	};
+};
+
 /* -------- API for Type1 VFIO IOMMU -------- */
 
 /**
- * VFIO_IOMMU_GET_INFO - _IOR(VFIO_TYPE, VFIO_BASE + 12, struct vfio_iommu_info)
  *
  * Retrieve information about the IOMMU object. Fills in provided
  * struct vfio_iommu_info. Caller sets argsz.
